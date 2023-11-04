@@ -1,16 +1,8 @@
 package com.majidim.easybankv4.easybankv4.newService;
 
-import com.majidim.easybankv4.easybankv4.HibernateImps.AgenceImp;
-import com.majidim.easybankv4.easybankv4.HibernateImps.ClientImpl;
+
 import com.majidim.easybankv4.easybankv4.HibernateImps.DemandeCreditImpl;
-import com.majidim.easybankv4.easybankv4.HibernateImps.EmployeImpl;
-import com.majidim.easybankv4.easybankv4.dto.Agence;
-import com.majidim.easybankv4.easybankv4.dto.Client;
 import com.majidim.easybankv4.easybankv4.dto.DemendeCredit;
-import com.majidim.easybankv4.easybankv4.dto.Employe;
-import com.majidim.easybankv4.easybankv4.exception.ParametreException;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -42,10 +34,8 @@ class DemandeCreditServiceTest {
     void createTrue() {
         DemendeCredit demendeCreditTrue = createValidDemendeCredit();
 
-        // Mock the service
         when(impDemandeCredit.create(demendeCreditTrue)).thenReturn(Optional.of(demendeCreditTrue));
 
-        // Act
         Optional<DemendeCredit> result = demandeCreditService.create(demendeCreditTrue);
 
         // Assert that the result is present and contains the expected data
