@@ -118,6 +118,9 @@ class DemandeCreditServiceTest {
 
         Optional<DemendeCredit> result = demandeCreditService.update(demendeCredit);
 
+        verify(impDemandeCredit, Mockito.times(1)).findByID(demendeCredit.getNumero());
+        verify(impDemandeCredit, Mockito.times(1)).update(demendeCredit);
+
         assertTrue(result.isPresent());
     }
     @Test
@@ -128,6 +131,8 @@ class DemandeCreditServiceTest {
 
         Optional<DemendeCredit> result = demandeCreditService.update(demendeCredit);
 
+        verify(impDemandeCredit, Mockito.times(1)).findByID(demendeCredit.getNumero());
+        verify(impDemandeCredit, Mockito.times(0)).update(demendeCredit);
         assertFalse(result.isPresent());
     }
     private DemendeCredit createValidDemendeCredit() {
