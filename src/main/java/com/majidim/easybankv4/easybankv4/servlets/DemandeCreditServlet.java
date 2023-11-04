@@ -5,6 +5,7 @@ import com.majidim.easybankv4.easybankv4.HibernateImps.ClientImpl;
 import com.majidim.easybankv4.easybankv4.HibernateImps.DemandeCreditImpl;
 import com.majidim.easybankv4.easybankv4.dto.*;
 import com.majidim.easybankv4.easybankv4.HibernateImps.EmployeImpl;
+import com.majidim.easybankv4.easybankv4.exception.ParametreException;
 import com.majidim.easybankv4.easybankv4.newService.AgenceService;
 import com.majidim.easybankv4.easybankv4.newService.ClientService;
 import com.majidim.easybankv4.easybankv4.newService.DemandeCreditService;
@@ -57,7 +58,20 @@ public class DemandeCreditServlet extends HttpServlet {
 
     private void editDemandeCredit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String numero = request.getParameter("numero");
-        if (numero != null) {
+        try{
+            Optional<DemendeCredit> optDemandeCredit = demandeCreditService.findByCode(numero);
+            if (optDemandeCredit.isPresent()) {
+                DemendeCredit demandeCredit = optDemandeCredit.get();
+                request.setAttribute("demandeCredit", demandeCredit);
+                request.getRequestDispatcher("/view/simulation/editdemandecredit.jsp").forward(request, response);
+            } else {
+                response.sendRedirect(request.getContextPath() + "/demandeCredit");
+            }
+        }catch(IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/demandeCredit");
+        }
+/*        if (numero != null) {
             Optional<DemendeCredit> optDemandeCredit = demandeCreditService.findByCode(numero);
             if (optDemandeCredit.isPresent()) {
                 DemendeCredit demandeCredit = optDemandeCredit.get();
@@ -68,7 +82,7 @@ public class DemandeCreditServlet extends HttpServlet {
             }
         } else {
             response.sendRedirect(request.getContextPath() + "/demandeCredit");
-        }
+        }*/
     }
     private void updateDemendeCredit(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String numero = request.getParameter("numero");
@@ -169,7 +183,18 @@ public class DemandeCreditServlet extends HttpServlet {
         System.out.println("reached destination");
         String code = request.getParameter("numero");
         System.out.println(code);
-        if (code != null) {
+        try{
+            boolean deleted = demandeCreditService.delete(code);
+            if (deleted) {
+                response.sendRedirect(request.getContextPath() + "/demandeCredit?success=delete-success");
+            } else {
+                response.sendRedirect("/demandeCredit?error=delete-failed");
+            }
+        }catch(IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/demandeCredit");
+        }
+/*        if (code != null) {
             boolean deleted = demandeCreditService.delete(code);
             if (deleted) {
                 response.sendRedirect(request.getContextPath() + "/demandeCredit?success=delete-success");
@@ -178,7 +203,7 @@ public class DemandeCreditServlet extends HttpServlet {
             }
         } else {
             response.sendRedirect(request.getContextPath() + "/demandeCredit");
-        }
+        }*/
     }
 
     @Override

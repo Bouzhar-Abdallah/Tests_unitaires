@@ -2,6 +2,7 @@ package com.majidim.easybankv4.easybankv4.newService;
 
 import com.majidim.easybankv4.easybankv4.HibernateImps.DemandeCreditImpl;
 import com.majidim.easybankv4.easybankv4.dto.DemendeCredit;
+import com.majidim.easybankv4.easybankv4.exception.ParametreException;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,12 +16,14 @@ public class DemandeCreditService {
         this.creditImpl = creditImpl;
     }
 
-    public Optional<DemendeCredit> create(DemendeCredit demendeCredit) {
+    public Optional<DemendeCredit> create(DemendeCredit demendeCredit) throws IllegalArgumentException {
+        if (demendeCredit == null) throw new IllegalArgumentException("un code n'etait pas fournit");
         if (validate(demendeCredit)) return creditImpl.create(demendeCredit);
         else return Optional.empty();
     }
 
-    public Optional<DemendeCredit> findByCode(String code) {
+    public Optional<DemendeCredit> findByCode(String code) throws IllegalArgumentException {
+        if (code.isEmpty()) throw new IllegalArgumentException("un code n'etait pas fournit");
         return creditImpl.findByID(code);
     }
 
@@ -28,8 +31,9 @@ public class DemandeCreditService {
         return creditImpl.getAll();
     }
 
-    public boolean delete(String numero) {
-        return creditImpl.delete(numero);
+    public boolean delete(String code) throws IllegalArgumentException {
+        if (code.isEmpty()) throw new IllegalArgumentException("un code n'etait pas fournit");
+        return creditImpl.delete(code);
     }
     private boolean validate(DemendeCredit demendeCredit) {
         return (Math.abs(calculeMensualite(demendeCredit) - demendeCredit.getSimulation()) < tolerance);

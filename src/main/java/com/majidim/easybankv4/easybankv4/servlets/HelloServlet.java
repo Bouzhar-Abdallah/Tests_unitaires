@@ -9,6 +9,7 @@ import java.util.Random;
 import com.majidim.easybankv4.easybankv4.HibernateImps.AgenceImp;
 import com.majidim.easybankv4.easybankv4.HibernateImps.ClientImpl;
 import com.majidim.easybankv4.easybankv4.dto.*;
+import com.majidim.easybankv4.easybankv4.exception.ParametreException;
 import com.majidim.easybankv4.easybankv4.newService.AgenceService;
 import com.majidim.easybankv4.easybankv4.newService.ClientService;
 import com.majidim.easybankv4.easybankv4.HibernateImps.DemandeCreditImpl;
@@ -29,8 +30,6 @@ public class HelloServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
-
-
     }
 
     @Override
@@ -86,7 +85,11 @@ public class HelloServlet extends HttpServlet {
             demendeCredit.setEmploye(employe);
             demendeCredit.setAgence(agence);
             demendeCredit.setClient(client);
-            demandeCreditService.create(demendeCredit);
+            try {
+                demandeCreditService.create(demendeCredit);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
 
         }
 
@@ -102,8 +105,13 @@ public class HelloServlet extends HttpServlet {
         DemandeCreditService demandeCreditService = new DemandeCreditService(new DemandeCreditImpl());
         String method = req.getParameter("_METHOD");
         String code = req.getParameter("_CODE");
-        if ("delete".equals(method)){
-            demandeCreditService.delete(code);
+        if ("delete".equals(method)) {
+            try {
+
+                demandeCreditService.delete(code);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
         }
 /*
          if ("demande".equals(method)) {

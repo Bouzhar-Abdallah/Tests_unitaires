@@ -20,6 +20,7 @@ public class HibernateImplementation<Entity, Identifier> implements InterfaceDat
 
     @Override
     public Optional<Entity> create(Entity entity) {
+        System.out.println("create");
             EntityManager em = emf.createEntityManager(); //represent the context
         try {
             em.getTransaction().begin();
@@ -115,6 +116,7 @@ public class HibernateImplementation<Entity, Identifier> implements InterfaceDat
 
     @Override
     public boolean delete(Identifier id, Class<Entity> entityClass) {
+        System.out.println("delete");
         System.out.println("id "+id);
         System.out.println("entity class "+entityClass);
         EntityManager em = emf.createEntityManager(); //represent the context
