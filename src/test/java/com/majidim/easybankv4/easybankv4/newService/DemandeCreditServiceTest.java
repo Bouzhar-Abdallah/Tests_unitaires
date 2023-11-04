@@ -20,6 +20,7 @@ import org.mockito.MockitoAnnotations;
 import static org.mockito.Mockito.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,9 +30,7 @@ class DemandeCreditServiceTest {
     DemandeCreditService demandeCreditService;
     @Mock
     DemandeCreditImpl impDemandeCredit;
-    Employe employe;
-    Agence agence;
-    Client client;
+
 
     @BeforeEach
     public void setUp() {
@@ -77,25 +76,60 @@ class DemandeCreditServiceTest {
     @Test
     void testDeleteWithException() {
 
-        String demandeCreditId = "";
+        String throwExceptionId = "";
 
         // Act and Assert
-        assertThrows(IllegalArgumentException.class, () -> demandeCreditService.delete(demandeCreditId),
+        assertThrows(IllegalArgumentException.class, () -> demandeCreditService.delete(throwExceptionId),
                 "Delete should throw ParametreException");
+
+        String NoExceptionId = "x";
+
+        when(impDemandeCredit.delete(NoExceptionId)).thenReturn(true);
+
+        boolean result = demandeCreditService.delete(NoExceptionId);
+        verify(impDemandeCredit, Mockito.times(1)).delete(NoExceptionId);
+        assertTrue(result);
     }
+
     @Test
-    void testDeleteNoException() {
+    void testFindByCode() {
+
+        String throwExceptionId = "";
+
+        // Act and Assert
+        assertThrows(IllegalArgumentException.class, () -> demandeCreditService.findByCode(throwExceptionId),
+                "Delete should throw ParametreException");
 
         String demandeCreditId = "x";
+        DemendeCredit mockedDemendeCredit = Mockito.mock(DemendeCredit.class);
+        when(impDemandeCredit.findByID(demandeCreditId)).thenReturn(Optional.of(mockedDemendeCredit));
 
-        when(impDemandeCredit.delete(demandeCreditId)).thenReturn(true);
-
-        boolean result = demandeCreditService.delete(demandeCreditId);
-        verify(impDemandeCredit, Mockito.times(1)).delete(demandeCreditId);
-        assertTrue(result);
+        Optional<DemendeCredit> result = demandeCreditService.findByCode(demandeCreditId);
+        verify(impDemandeCredit, Mockito.times(1)).findByID(demandeCreditId);
+        assertTrue(result.isPresent());
 
     }
 
+    @Test
+    void testUpdate(){
+        DemendeCredit demendeCredit = createValidDemendeCredit();
+        when(impDemandeCredit.findByID(demendeCredit.getNumero())).thenReturn(Optional.of(demendeCredit));
+        when(impDemandeCredit.update(demendeCredit)).thenReturn(Optional.of(demendeCredit));
+
+        Optional<DemendeCredit> result = demandeCreditService.update(demendeCredit);
+
+        assertTrue(result.isPresent());
+    }
+    @Test
+    void testUpdateError(){
+        DemendeCredit demendeCredit = createValidDemendeCredit();
+        when(impDemandeCredit.findByID(demendeCredit.getNumero())).thenReturn(Optional.of(createInvalidDemendeCredit()));
+        when(impDemandeCredit.update(demendeCredit)).thenReturn(Optional.of(demendeCredit));
+
+        Optional<DemendeCredit> result = demandeCreditService.update(demendeCredit);
+
+        assertFalse(result.isPresent());
+    }
     private DemendeCredit createValidDemendeCredit() {
         DemendeCredit demendeCreditTrue = new DemendeCredit();
         demendeCreditTrue.setNumero("xxx");
@@ -104,11 +138,9 @@ class DemandeCreditServiceTest {
         demendeCreditTrue.setDate(LocalDate.now());
         demendeCreditTrue.setDuree("14");
         demendeCreditTrue.setStatus("EnAttante");
-        demendeCreditTrue.setSimulation(384.50585834838205D);
+        demendeCreditTrue.setSimulation(384.50D);
         demendeCreditTrue.setDate(LocalDate.now());
-        demendeCreditTrue.setEmploye(employe);
-        demendeCreditTrue.setAgence(agence);
-        demendeCreditTrue.setClient(client);
+
         return demendeCreditTrue;
     }
 
@@ -121,11 +153,8 @@ class DemandeCreditServiceTest {
         demendeCreditFalse.setDate(LocalDate.now());
         demendeCreditFalse.setDuree("14");
         demendeCreditFalse.setStatus("EnAttante");
-        demendeCreditFalse.setSimulation(384.50585834838205D);
+        demendeCreditFalse.setSimulation(384.50D);
         demendeCreditFalse.setDate(LocalDate.now());
-        demendeCreditFalse.setEmploye(employe);
-        demendeCreditFalse.setAgence(agence);
-        demendeCreditFalse.setClient(client);
         return demendeCreditFalse;
     }
 

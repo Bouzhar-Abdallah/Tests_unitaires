@@ -43,7 +43,24 @@ public class DemandeCreditService {
         return (demendeCredit.getMontant()*Taux/12) /(1- Math.pow( 1+(Taux/12),- Integer.parseInt(demendeCredit.getDuree()) ));
     }
     public Optional<DemendeCredit> update(DemendeCredit demendeCredit) {
-        return creditImpl.update(demendeCredit);
+
+        Optional<DemendeCredit> demendeCreditBeforeOpt = creditImpl.findByID(demendeCredit.getNumero());
+        DemendeCredit demendeCreditBefore = new DemendeCredit();
+        if (demendeCreditBeforeOpt.isPresent()){
+            demendeCreditBefore = demendeCreditBeforeOpt.get();
+        }
+        if (protectData(demendeCreditBefore,demendeCredit))
+        {
+            return creditImpl.update(demendeCredit);
+        }else{
+            return Optional.empty();
+        }
+    }
+    private boolean protectData(DemendeCredit demendeCreditBefore,DemendeCredit demendeCreditNew){
+        return demendeCreditBefore.getSimulation().equals(demendeCreditNew.getSimulation()) &&
+                demendeCreditBefore.getNumero().equals(demendeCreditNew.getNumero()) &&
+                demendeCreditBefore.getDuree().equals(demendeCreditNew.getDuree()) &&
+                demendeCreditBefore.getMontant().equals(demendeCreditNew.getMontant());
     }
 
 
