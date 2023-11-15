@@ -67,12 +67,10 @@ class DemandeCreditServiceTest {
     void testDeleteWithException() {
 
         String throwExceptionId = "";
+        String NoExceptionId = "x";
 
-        // Act and Assert
         assertThrows(IllegalArgumentException.class, () -> demandeCreditService.delete(throwExceptionId),
                 "Delete should throw ParametreException");
-
-        String NoExceptionId = "x";
 
         when(impDemandeCredit.delete(NoExceptionId)).thenReturn(true);
 
@@ -86,7 +84,6 @@ class DemandeCreditServiceTest {
 
         String throwExceptionId = "";
 
-        // Act and Assert
         assertThrows(IllegalArgumentException.class, () -> demandeCreditService.findByCode(throwExceptionId),
                 "Delete should throw ParametreException");
 
